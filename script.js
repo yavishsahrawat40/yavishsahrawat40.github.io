@@ -14,16 +14,17 @@ function formatTime(seconds) {
 
 async function getSongs(folder) {
     currentFolder = folder;
-    let a = await fetch(`https://github.com/yavishsahrawat40/yavishsahrawat40.github.io/tree/main/${folder}/`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let as = div.getElementsByTagName("a");
+    const repo = 'yavishsahrawat40/yavishsahrawat40.github.io';
+    const path = `songs/${folder}`;
+    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+    let response = await fetch(url);
+    let data = await response.json();
+    
     songs = [];
-    for (let index = 0; index < as.length; index++) {
-        const element = as[index];
-        if (element.href.endsWith(".mp3")) {
-            songs.push(element.href.split(`/${folder}/`)[1]);
+    for (let file of data) {
+        if (file.name.endsWith('.mp3')) {
+            songs.push(file.name);
         }
     }
 
@@ -40,14 +41,13 @@ async function getSongs(folder) {
 
     Array.from(document.querySelector(".songsList").getElementsByTagName("li")).forEach(e => {
         e.addEventListener("click", element => {
-            //console.log(e.querySelector(".info").firstElementChild.innerHTML); // Added log
             playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim());
         });
     });
 }
 
 const playMusic = (track, pause = false) => {
-    currentSong.src = `/Web Development/Project/${currentFolder}/` + track;
+    currentSong.src = `https://raw.githubusercontent.com/yavishsahrawat40/yavishsahrawat40.github.io/main/songs/${currentFolder}/` + track;
     if (!pause) {
         currentSong.play();
         play.src = "img/pause.svg";
