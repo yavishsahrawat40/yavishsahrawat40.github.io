@@ -1,0 +1,398 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* Apply to the entire website */
+body {
+    background-color: black;
+    color: white;
+    scrollbar-width: thin;
+    /* For Firefox */
+    scrollbar-color: #444 #222;
+    /* For Firefox */
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 12px;
+    /* Scroll bar width */
+}
+
+::-webkit-scrollbar-track {
+    background: #222;
+    /* Track color */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #444;
+    /* Scroll bar thumb color */
+    border-radius: 6px;
+    /* Rounded corners */
+    border: 3px solid #222;
+    /* Padding around thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+    /* Hover color for thumb */
+}
+
+/* Horizontal scrollbar */
+::-webkit-scrollbar-thumb:horizontal {
+    background-color: #444;
+}
+
+/* Optional: Customize scrollbar on specific elements */
+.element-class {
+    scrollbar-width: thin;
+    scrollbar-color: #444 #222;
+}
+
+.element-class::-webkit-scrollbar {
+    width: 12px;
+}
+
+.element-class::-webkit-scrollbar-track {
+    background: #222;
+}
+
+.element-class::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 6px;
+    border: 3px solid #222;
+}
+
+.element-class::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+
+.container {
+    display: flex;
+}
+
+.left {
+    position: fixed;
+    width: 25vw;
+}
+
+.right {
+    width: 75vw;
+    margin: 16px 0;
+    position: relative;
+    right: -385px;
+}
+
+
+.border {
+    border: 2px solid red;
+    margin: 3px;
+}
+
+.home {
+    padding: 15px;
+}
+
+.home ul li {
+    display: flex;
+    gap: 15px;
+    width: 21px;
+    list-style: none;
+    padding: 11px;
+}
+
+.invert {
+    filter: invert(1);
+}
+
+.bg-grey {
+    background-color: #121212;
+    border-radius: 7px;
+}
+
+.m-1 {
+    margin: 7px;
+}
+
+.cross {
+    display: none
+}
+
+.library {
+    min-height: 75vh;
+    position: relative;
+
+}
+
+.logo-2 {
+    display: flex;
+    width: 21px;
+    padding: 15px;
+}
+
+.heading {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    padding-top: 14px;
+    padding: 23px 14px;
+    align-items: center;
+
+}
+
+.heading img {
+    width: 32px;
+}
+
+.songsList {
+    height: 358px;
+    padding: 12px;
+    overflow: auto;
+    margin: 34px 0;
+}
+
+.songsList ul {
+    padding: 0 5px;
+    overflow: auto;
+}
+
+.songsList ul li {
+    display: flex;
+    cursor: pointer;
+    list-style-type: decimal;
+    padding: 9px;
+    margin: 10px;
+    gap: 34px;
+}
+
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 12px;
+    position: absolute;
+    bottom: 0;
+}
+
+.footer a {
+    color: gray;
+    padding: 23px;
+    margin-top: 23px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #121212;
+    z-index: 1;
+    width: 98%;
+}
+
+.header * {
+    padding: 12px;
+}
+
+.hamburger {
+    display: none;
+}
+
+button {
+    border-radius: 34px;
+    width: 105px;
+    font-size: large;
+}
+
+.spotifyPlaylist {
+    padding: 15px;
+
+}
+
+.spotifyPlaylist .card {
+    width: 200px;
+}
+
+.cardContainer {
+    justify-content: center;
+    margin: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.card {
+    position: relative;
+    width: 200px;
+    padding: 10px;
+    border: 4px;
+    background-color: #232222;
+    cursor: pointer;
+    transition: all 250ms;
+}
+
+.card:hover{
+    transform: scale(1.05) rotate(-1deg);
+    background-color: black;
+    .play{
+        opacity: 1;
+    }
+}
+
+.card * {
+    padding-top: 9px;
+}
+
+.card img {
+    width: 100%;
+    object-fit: contain;
+}
+
+.play {
+    position: absolute;
+    top: 168px;
+    right: 18px;
+    opacity: 0;
+    transition: all 0.5s ease-out;
+}
+
+
+
+.signupbtn {
+    background-color: #121212;
+    color: gray;
+    border: none;
+}
+
+.signupbtn:hover {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.loginbtn {
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 250ms;
+
+}
+
+.loginbtn:hover {
+    cursor: pointer;
+    transform: scale(1.05) rotate(-1deg);
+}
+
+.playbar {
+    position: fixed;
+    bottom: 0;
+    background-color: rgb(72, 69, 69);
+    padding: 16px;
+    width: 71%;
+    border-radius: 34px;
+    margin: 9px;
+}
+
+.info {
+    width: 150px;
+}
+
+.info .div{
+    word-break: break-all;
+}
+
+.playbuttons {
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 74%;
+    margin: auto;
+}
+
+.playNow {
+    padding-top: 13px;
+    font-size: 13px;
+    width: 63px;
+}
+
+.seekbar {
+    height: 3px;
+    width: 98%;
+    margin: 10px;
+    background-color: aliceblue;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.circle {
+    position: relative;
+    height: 13px;
+    width: 13px;
+    border-radius: 18px;
+    background-color: beige;
+    bottom: 5px;
+    transition: left 0.5s;
+    left: 0%;
+}
+
+.songdetails {
+    display: flex;
+}
+
+.songinfo,
+.songtime {
+    padding: 7px;
+}
+
+@media (max-width: 1100px) {
+    .left {
+        position: absolute;
+        left: -120%;
+        transform: all 0.5s;
+        z-index: 1;
+        width: 200px;
+        background-color: black;
+    }
+
+    .right {
+        position: static;
+        width: 100vw;
+    }
+
+    .card{
+        width: auto;
+    }
+
+    .playbar {
+        width: 87%;
+    }
+
+    .hamburger {
+        display: block;
+        cursor: pointer;
+    }
+
+    .nav {
+        display: none;
+    }
+
+    .cross {
+        display: block;
+        cursor: pointer;
+        position: absolute;
+        right: 24px;
+        top: 40px;
+    }
+
+    .header{
+        position: fixed;
+    }
+
+    .header .button {
+        margin-right: 13px;
+    }
+
+    .spotifyPlaylist .card{
+        width: 270px;
+    }
+}
