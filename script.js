@@ -13,47 +13,46 @@ function formatTime(seconds) {
 }
 
 async function getSongs(folder) {
-    currentFolder = folder;
-    const repo = 'yavishsahrawat40/yavishsahrawat40.github.io';
-    const path = `songs/${folder}`;
-    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-
-    try {
-        let response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    currFolder = folder;
+    let a = await fetch(`/${folder}/`)
+    let response = await a.text();
+    let div = document.createElement("div")
+    div.innerHTML = response;
+    let as = div.getElementsByTagName("a")
+    songs = []
+    for (let index = 0; index < as.length; index++) {
+        const element = as[index];
+        if (element.href.endsWith(".mp3")) {
+            songs.push(element.href.split(`/${folder}/`)[1])
         }
-        let data = await response.json();
-        if (!Array.isArray(data)) {
-            throw new Error("Expected an array but got something else");
-        }
-
-        songs = [];
-        for (let file of data) {
-            if (file.name.endsWith('.mp3')) {
-                songs.push(file.name);
-            }
-        }
-
-        let songUL = document.querySelector(".songsList").getElementsByTagName("ul")[0];
-        songUL.innerHTML = "";
-        for (const song of songs) {
-            songUL.innerHTML += `<li>
-                                <img class="invert" src="img/song.svg" alt="">
-                                <div class="info">
-                                    <div>${song.replaceAll('%20', ' ')}</div>
-                                </div>
-                                <img src="img/play.svg" alt="" class="invert"></li>`;
-        }
-
-        Array.from(document.querySelector(".songsList").getElementsByTagName("li")).forEach(e => {
-            e.addEventListener("click", element => {
-                playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim());
-            });
-        });
-    } catch (error) {
-        console.error("Failed to fetch songs:", error);
     }
+ 
+
+
+    // Show all the songs in the playlist
+    let songUL = document.querySelector(".songList").getElementsByTagName("ul")[0]
+    songUL.innerHTML = ""
+    for (const song of songs) {
+        songUL.innerHTML = songUL.innerHTML + `<li><img class="invert" width="34" src="img/music.svg" alt="">
+                            <div class="info">
+                                <div> ${song.replaceAll("%20", " ")}</div>
+                                <div>Harry</div>
+                            </div>
+                            <div class="playnow">
+                                <span>Play Now</span>
+                                <img class="invert" src="img/play.svg" alt="">
+                            </div> </li>`;
+    }
+
+    // Attach an event listener to each song
+    Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(e => {
+        e.addEventListener("click", element => {
+            playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim())
+
+        })
+    })
+
+    return songs
 }
 
 const playMusic = (track, pause = false) => {
