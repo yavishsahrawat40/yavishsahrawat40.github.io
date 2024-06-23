@@ -18,32 +18,42 @@ async function getSongs(folder) {
     const path = `songs/${folder}`;
     const url = `https://api.github.com/repos/${repo}/contents/${path}`;
 
-    let response = await fetch(url);
-    let data = await response.json();
-    
-    songs = [];
-    for (let file of data) {
-        if (file.name.endsWith('.mp3')) {
-            songs.push(file.name);
+    try {
+        let response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    }
+        let data = await response.json();
+        if (!Array.isArray(data)) {
+            throw new Error("Expected an array but got something else");
+        }
 
-    let songUL = document.querySelector(".songsList").getElementsByTagName("ul")[0];
-    songUL.innerHTML = "";
-    for (const song of songs) {
-        songUL.innerHTML += `<li>
-                            <img class="invert" src="img/song.svg" alt="">
-                            <div class="info">
-                                <div>${song.replaceAll('%20', ' ')}</div>
-                            </div>
-                            <img src="img/play.svg" alt="" class="invert"></li>`;
-    }
+        songs = [];
+        for (let file of data) {
+            if (file.name.endsWith('.mp3')) {
+                songs.push(file.name);
+            }
+        }
 
-    Array.from(document.querySelector(".songsList").getElementsByTagName("li")).forEach(e => {
-        e.addEventListener("click", element => {
-            playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim());
+        let songUL = document.querySelector(".songsList").getElementsByTagName("ul")[0];
+        songUL.innerHTML = "";
+        for (const song of songs) {
+            songUL.innerHTML += `<li>
+                                <img class="invert" src="img/song.svg" alt="">
+                                <div class="info">
+                                    <div>${song.replaceAll('%20', ' ')}</div>
+                                </div>
+                                <img src="img/play.svg" alt="" class="invert"></li>`;
+        }
+
+        Array.from(document.querySelector(".songsList").getElementsByTagName("li")).forEach(e => {
+            e.addEventListener("click", element => {
+                playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim());
+            });
         });
-    });
+    } catch (error) {
+        console.error("Failed to fetch songs:", error);
+    }
 }
 
 const playMusic = (track, pause = false) => {
@@ -57,57 +67,60 @@ const playMusic = (track, pause = false) => {
 }
 
 async function displayAlbums() {
-    let a = await fetch(`https://github.com/yavishsahrawat40/yavishsahrawat40.github.io/tree/main/songs`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let anchor = div.getElementsByTagName("a")
-    let cardContainer = document.querySelector(".cardContainer")
-    let array = Array.from(anchor)
-    for (let index = 0; index < array.length; index++) {
-        const e = array[index];
+    try {
+        let response = await fetch(`https://api.github.com/repos/yavishsahrawat40/yavishsahrawat40.github.io/contents/songs`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        let data = await response.json();
+        let cardContainer = document.querySelector(".cardContainer");
 
-        if (e.href.includes("/songs/") && !e.href.includes(".htaccess")) {
-            let folder = e.href.split("/").slice(-1)[0]
-            //get the meta data of the folder
-            let a = await fetch(`https://github.com/yavishsahrawat40/yavishsahrawat40.github.io/tree/main/songs/${folder}/info.json`);
-            let response = await a.json();
-            console.log(response)
-            cardContainer.innerHTML = cardContainer.innerHTML + `<div data-folder="${folder}" class="card">
-                        <div class="play">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                <circle cx="12" cy="12" r="12" fill="green" />
-                                <path
-                                d="M18.8906 12.846C18.5371 14.189 16.8667 15.138 13.5257 17.0361C10.296 18.8709 8.6812 19.7884 7.37983 19.4196C6.8418 19.2671 6.35159 18.9776 5.95624 18.5787C5 17.6139 5 15.7426 5 12C5 8.2574 5 6.3861 5.95624 5.42132C6.35159 5.02245 6.8418 4.73288 7.37983 4.58042C8.6812 4.21165 10.296 5.12907 13.5257 6.96393C16.8667 8.86197 18.5371 9.811 18.8906 11.154C19.0365 11.7084 19.0365 12.2916 18.8906 12.846Z"
-                                    stroke="#000000" stroke-width="1.5" stroke-linejoin="round" fill="none" />
-                            </svg>
-                        </div>
-                        <img src="/Web%20Development/Project/songs/${folder}/cover.jpeg" alt="">
-                        <h2>${response.title}</h2>
-                        <p>${response.description}</p>
-                    </div>`
-
+        for (let item of data) {
+            if (item.type === "dir") {
+                let folder = item.name;
+                let metaResponse = await fetch(`https://raw.githubusercontent.com/yavishsahrawat40/yavishsahrawat40.github.io/main/songs/${folder}/info.json`);
+                if (!metaResponse.ok) {
+                    console.error(`Failed to fetch metadata for folder: ${folder}`);
+                    continue;
+                }
+                let metadata = await metaResponse.json();
+                cardContainer.innerHTML += `<div data-folder="${folder}" class="card">
+                    <div class="play">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <circle cx="12" cy="12" r="12" fill="green" />
+                            <path
+                            d="M18.8906 12.846C18.5371 14.189 16.8667 15.138 13.5257 17.0361C10.296 18.8709 8.6812 19.7884 7.37983 19.4196C6.8418 19.2671 6.35159 18.9776 5.95624 18.5787C5 17.6139 5 15.7426 5 12C5 8.2574 5 6.3861 5.95624 5.42132C6.35159 5.02245 6.8418 4.73288 7.37983 4.58042C8.6812 4.21165 10.296 5.12907 13.5257 6.96393C16.8667 8.86197 18.5371 9.811 18.8906 11.154C19.0365 11.7084 19.0365 12.2916 18.8906 12.846Z"
+                                stroke="#000000" stroke-width="1.5" stroke-linejoin="round" fill="none" />
+                        </svg>
+                    </div>
+                    <img src="https://raw.githubusercontent.com/yavishsahrawat40/yavishsahrawat40.github.io/main/songs/${folder}/cover.jpeg" alt="">
+                    <h2>${metadata.title}</h2>
+                    <p>${metadata.description}</p>
+                </div>`;
+            }
         }
 
-    }
-    Array.from(document.getElementsByClassName("card")).forEach(e => {
-        e.addEventListener("click", async item => {
-            console.log("Card clicked", item.currentTarget.dataset.folder); // Added log
-            await getSongs(`songs/${item.currentTarget.dataset.folder}`);
-            if (songs.length > 0) {
-                playMusic(songs[0], true);
-            } else {
-                console.error("No songs found in the folder"); // Added error handling
-            }
+        Array.from(document.getElementsByClassName("card")).forEach(e => {
+            e.addEventListener("click", async item => {
+                console.log("Card clicked", item.currentTarget.dataset.folder);
+                await getSongs(item.currentTarget.dataset.folder);
+                if (songs.length > 0) {
+                    playMusic(songs[0], true);
+                } else {
+                    console.error("No songs found in the folder");
+                }
+            });
         });
-    });
+    } catch (error) {
+        console.error("Failed to fetch albums:", error);
+    }
 }
 
 async function main() {
-    await getSongs("songs/ncs");
+    await getSongs("ncs");
     playMusic(songs[0], true);
 
-    //display all the albums
+    // Display all the albums
     displayAlbums()
 
     play.addEventListener("click", () => {
@@ -149,7 +162,7 @@ async function main() {
         if ((index - 1) >= 0) {
             playMusic(songs[index - 1]);
         } else {
-            console.error("No previous song found"); // Added error handling
+            console.error("No previous song found");
         }
     });
 
@@ -159,10 +172,9 @@ async function main() {
         if ((index + 1) < songs.length) {
             playMusic(songs[index + 1]);
         } else {
-            console.error("No next song found"); // Added error handling
+            console.error("No next song found");
         }
     });
-
 }
 
 main();
